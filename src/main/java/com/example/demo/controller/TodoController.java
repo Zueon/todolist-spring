@@ -66,4 +66,18 @@ public class TodoController {
         }
     }
 
+    @PutMapping
+    public ResponseEntity<?> updateTodo(@RequestBody TodoDTO dto){
+        String tempUserId = "temp";
+
+        TodoEntity entity = TodoDTO.toEntity(dto);
+        entity.setUserId(tempUserId);
+
+        List<TodoEntity> entities = service.update(entity);
+        List<TodoDTO> dtos = entities.stream().map(TodoDTO::new).collect(Collectors.toList());
+
+        ResponseDTO<TodoDTO> response = ResponseDTO.<TodoDTO>builder().data(dtos).build();
+
+        return ResponseEntity.ok().body(response);
+    }
 }
