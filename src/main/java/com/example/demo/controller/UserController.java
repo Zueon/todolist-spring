@@ -44,5 +44,21 @@ public class UserController {
 
     }
 
-
+    public ResponseEntity<?> authenticate(@RequestBody UserDTO userDTO) {
+        UserEntity user = userService.getByCredentials(
+                userDTO.getEmail(), userDTO.getPassword());
+        if (user != null) {
+            final UserDTO responseUserDTO = UserDTO.builder()
+                    .email(user.getEmail())
+                    .id(userDTO.getId())
+                    .build();
+            return ResponseEntity.ok().body(responseUserDTO);
+        } else {
+            ResponseDTO responseDTO = ResponseDTO.builder()
+                    .error("Fail to Login").build();
+            return ResponseEntity
+                    .badRequest()
+                    .body(responseDTO);
+        }
+    }
 }
