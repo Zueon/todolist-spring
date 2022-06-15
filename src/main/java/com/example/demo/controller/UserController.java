@@ -43,14 +43,14 @@ public class UserController {
         }
 
     }
-
+    @PostMapping("/signin")
     public ResponseEntity<?> authenticate(@RequestBody UserDTO userDTO) {
         UserEntity user = userService.getByCredentials(
                 userDTO.getEmail(), userDTO.getPassword());
         if (user != null) {
             final UserDTO responseUserDTO = UserDTO.builder()
                     .email(user.getEmail())
-                    .id(userDTO.getId())
+                    .id(user.getId())
                     .build();
             return ResponseEntity.ok().body(responseUserDTO);
         } else {
