@@ -8,6 +8,8 @@ import com.example.demo.services.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,13 +25,15 @@ public class UserController {
     @Autowired
     private TokenProvider tokenProvider;
 
+    private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody UserDTO userDTO) {
         try {
             UserEntity user = UserEntity.builder()
                     .username(userDTO.getUsername())
                     .email(userDTO.getEmail())
-                    .password(userDTO.getPassword())
+                    .password(passwordEncoder.encode(userDTO.getPassword()))
                     .build();
 
             UserEntity registeredUser = userService.create(user);
@@ -42,15 +46,16 @@ public class UserController {
 
             return ResponseEntity.ok().body(responseUserDTO);
         } catch (Exception e) {
-            ResponseDTO responseDTO = ResponseDTO.builder().error(e.getMessage()).build();
+            ResponseDTO<Object> responseDTO = ResponseDTO.builder().error(e.getMessage()).build();
             return ResponseEntity.badRequest().body(responseDTO);
         }
 
     }
+
     @PostMapping("/signin")
     public ResponseEntity<?> authenticate(@RequestBody UserDTO userDTO) {
         UserEntity user = userService.getByCredentials(
-                userDTO.getEmail(), userDTO.getPassword());
+                userDTO.getEmail(), userDTO.getPassword(), passwordEncoder);
         if (user != null) {
             final String token = tokenProvider.create(user);
             final UserDTO responseUserDTO = UserDTO.builder()
@@ -60,7 +65,7 @@ public class UserController {
                     .build();
             return ResponseEntity.ok().body(responseUserDTO);
         } else {
-            ResponseDTO responseDTO = ResponseDTO.builder()
+            ResponseDTO<Object> responseDTO = ResponseDTO.builder()
                     .error("Fail to Login").build();
             return ResponseEntity
                     .badRequest()
