@@ -46,7 +46,7 @@ public class UserController {
 
             return ResponseEntity.ok().body(responseUserDTO);
         } catch (Exception e) {
-            ResponseDTO<Object> responseDTO = ResponseDTO.builder().error(e.getMessage()).build();
+            ResponseDTO responseDTO = ResponseDTO.builder().error(e.getMessage()).build();
             return ResponseEntity.badRequest().body(responseDTO);
         }
 
@@ -54,6 +54,7 @@ public class UserController {
 
     @PostMapping("/signin")
     public ResponseEntity<?> authenticate(@RequestBody UserDTO userDTO) {
+        log.info("userDTO" + userDTO);
         UserEntity user = userService.getByCredentials(
                 userDTO.getEmail(), userDTO.getPassword(), passwordEncoder);
         if (user != null) {
@@ -61,11 +62,12 @@ public class UserController {
             final UserDTO responseUserDTO = UserDTO.builder()
                     .email(user.getEmail())
                     .id(user.getId())
+                    .username(user.getUsername())
                     .token(token)
                     .build();
             return ResponseEntity.ok().body(responseUserDTO);
         } else {
-            ResponseDTO<Object> responseDTO = ResponseDTO.builder()
+            ResponseDTO responseDTO = ResponseDTO.builder()
                     .error("Fail to Login").build();
             return ResponseEntity
                     .badRequest()

@@ -36,7 +36,7 @@ public class TodoController {
 
         ResponseDTO<TodoDTO> response = ResponseDTO.<TodoDTO>builder().data(dtos).build();
 
-        return ResponseEntity.ok().body(response);
+        return ResponseEntity.ok(response);
     }
 
 
@@ -55,7 +55,7 @@ public class TodoController {
 
             ResponseDTO<TodoDTO> response = ResponseDTO.<TodoDTO>builder().data(dtos).build();
 
-            return ResponseEntity.ok().body(response);
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
             String err = e.getMessage();
             ResponseDTO<TodoDTO> response = ResponseDTO.<TodoDTO>builder().error(err).build();
@@ -75,7 +75,7 @@ public class TodoController {
 
         ResponseDTO<TodoDTO> response = ResponseDTO.<TodoDTO>builder().data(dtos).build();
 
-        return ResponseEntity.ok().body(response);
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping
@@ -89,7 +89,7 @@ public class TodoController {
 
             ResponseDTO<TodoDTO> response = ResponseDTO.<TodoDTO>builder().data(dtos).build();
 
-            return ResponseEntity.ok().body(response);
+            return ResponseEntity.ok(response);
 
         } catch (Exception e) {
             String err = e.getMessage();
