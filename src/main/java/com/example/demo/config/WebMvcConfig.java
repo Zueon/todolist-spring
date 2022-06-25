@@ -11,8 +11,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:3000", "http://prod-todo-front-end.ap-northeast-2.elasticbeanstalk.com/",
-                        "https://app.zueon.link/")
+                .allowedOrigins("http://localhost:3000", "http://todoapp.zueon.link/", "https://todoapp.zueon.link/")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true)
